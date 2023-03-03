@@ -259,22 +259,6 @@ func (r *ReconcilerBase) GenerateConfigs(
 		"01-nova.conf":    "/nova.conf",
 		"nova-blank.conf": "/nova-blank.conf",
 	}
-	cms := []util.Template{
-		// ConfigMap
-		{
-			Name:               fmt.Sprintf("%s-config-data", instance.GetName()),
-			Namespace:          instance.GetNamespace(),
-			Type:               util.TemplateTypeConfig,
-			InstanceType:       instance.GetObjectKind().GroupVersionKind().Kind,
-			ConfigOptions:      templateParameters,
-			Labels:             cmLabels,
-			CustomData:         extraData,
-			Annotations:        map[string]string{},
-			AdditionalTemplate: additionalTemplates,
-		},
-	}
-	// TODO(sean): make this create a secret instead.
-	// consider taking this as a function pointer or interface
-	// to enable unit testing at some point.
-	return configmap.EnsureConfigMaps(ctx, h, instance, cms, envVars)
+	return configmap.GenerateConfigs(ctx, h, instance, envVars,
+        additionalTemplates, templateParameters, extraData, cmLabels)
 }
