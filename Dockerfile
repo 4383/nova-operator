@@ -75,4 +75,9 @@ USER $USER_ID
 
 ENV PATH="/:${PATH}"
 
+# Generate the configmap for nova's config
+RUN pip install oslo.config PyYAML
+COPY scripts/oslo_config_to_configmap.py /usr/local/bin/
+RUN python /usr/local/bin/oslo_config_to_configmap.py
+
 ENTRYPOINT ["/manager"]
